@@ -32,7 +32,7 @@ Wishlist kamu muncul dalam overlay: gambar, harga, rating, terjual, nama toko.
 - Source-nya terbuka — klik kanan bookmark → Edit, atau baca
   [`bookmarklet_core.js`](./bookmarklet_core.js) untuk memverifikasi isinya.
 
-## Cara kerja
+<!-- ## Cara kerja
 
 Bookmarklet memanggil endpoint internal Shopee
 
@@ -42,7 +42,7 @@ GET https://shopee.co.id/api/v4/pages/get_liked_items?limit=48&cursor=<cursor>
 
 dari halaman shopee (same-origin), sehingga lolos CORS dan memakai session login
 pengguna. Fitur ini memang ada di app mobile tapi tidak ditampilkan di web —
-bookmarklet ini hanya membukanya.
+bookmarklet ini hanya membukanya. -->
 
 ## Disclaimer
 
