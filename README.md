@@ -18,7 +18,7 @@ Wishlist kamu muncul dalam overlay: gambar, harga, rating, terjual, nama toko.
   paling disukai, rating tertinggi, nama A-Z.
 - **Filter**: range harga, rating minimum, Official only, stok ada.
 - **Cari** di seluruh data (nama barang & nama toko).
-- **Pagination** 60 item/halaman.
+- **Pagination** 49 item/halaman.
 - **Ekspor JSON / CSV** (ikut filter yang aktif).
 - **Cache**: buka kedua kali langsung tampil (disimpan di browser kamu,
   klik tombol ↻ buat ambil data terbaru).
