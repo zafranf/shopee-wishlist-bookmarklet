@@ -98,7 +98,7 @@
     let cursor = 0, all = [], pages = 0;
     while (pages < 200) {
       if (onProgress) onProgress(all.length, pages + 1);
-      const r = await fetch('/api/v4/pages/get_liked_items?limit=48&cursor=' + cursor, { credentials: 'include' });
+      const r = await fetch('/api/v4/pages/get_liked_items?limit=500&cursor=' + cursor, { credentials: 'include' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const j = await r.json();
       if (j.error && !j.data) throw new Error(j.error_msg || ('error ' + j.error));
