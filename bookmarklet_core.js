@@ -34,8 +34,8 @@
         <div style="font-size:17px;font-weight:700;white-space:nowrap">&#10084; Wishlist Shopee</div>
         <div id="swl-count" style="color:#8b93a1;white-space:nowrap">memuat&hellip;</div>
         <span id="swl-info" style="color:#5a6270;font-size:12px;white-space:nowrap"></span>
-        <input id="swl-search" placeholder="cari item&hellip;" style="flex:1;min-width:120px;padding:8px 12px;background:#0f1115;border:1px solid #2a3140;border-radius:8px;color:#e7eaee;outline:none">
         <button id="swl-refresh" title="Segarkan dari Shopee" aria-label="Segarkan" style="${btn};padding:8px 11px"><span id="swl-ico">&#8635;</span></button>
+        <input id="swl-search" placeholder="cari item&hellip;" style="flex:1;min-width:120px;padding:8px 12px;background:#0f1115;border:1px solid #2a3140;border-radius:8px;color:#e7eaee;outline:none">
         <button id="swl-json" style="${btn}">JSON</button>
         <button id="swl-csv" style="${btn}">CSV</button>
         <button id="swl-close" style="padding:8px 14px;background:#ee4d2d;border:0;border-radius:8px;color:#fff;cursor:pointer;font-weight:600">Tutup</button>
