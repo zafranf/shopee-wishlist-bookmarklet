@@ -115,12 +115,22 @@
 
   const loadCache = () => { try { const o = JSON.parse(localStorage.getItem(CACHE_KEY)); return (o && Array.isArray(o.items) && o.items.length) ? o : null; } catch (e) { return null; } };
   const saveCache = items => { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items })); } catch (e) { /* kuota penuh: skip cache */ } };
+  let _ageTs = null, _ageOn = false;
   const setInfo = (ts, extra) => {
-    if (!ts && !extra) { $('swl-info').textContent = ''; return; }
+    if (!ts && !extra) { $('swl-info').textContent = ''; _ageOn = false; return; }
     let t = extra || '';
-    if (ts) { const m = Math.floor((Date.now() - ts) / 60000); t = (t ? t + ' \u00b7 ' : '') + (m < 1 ? 'baru saja' : m + ' mnt lalu'); }
+    if (ts) {
+      _ageTs = ts; _ageOn = true;
+      const m = Math.floor((Date.now() - ts) / 60000);
+      t = (t ? t + ' \u00b7 ' : '') + (m < 1 ? 'baru saja' : m + ' mnt lalu');
+    } else { _ageOn = false; } // state busy/error: jangan ditimpa timer
     $('swl-info').textContent = t;
   };
+  // timeago realtime: refresh umur cache tiap 10s tanpa perlu reload (berhenti sendiri kalau overlay ditutup)
+  let _infoTick = setInterval(() => {
+    if (!document.body.contains(root)) { clearInterval(_infoTick); return; }
+    if (_ageOn) setInfo(_ageTs);
+  }, 10000);
 
   let slim = [];
   const grid = $('swl-grid'), countEl = $('swl-count');
