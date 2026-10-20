@@ -16,6 +16,13 @@
   root.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#0f1115;color:#e7eaee;font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column';
   document.body.appendChild(root);
 
+  // style: spinner + disabled biar keliatan lagi kerja
+  const stl = document.createElement('style');
+  stl.textContent = '@keyframes swl-spin{to{transform:rotate(360deg)}}'
+    + '#swl-refresh.loading #swl-ico{display:inline-block;animation:swl-spin .9s linear infinite}'
+    + '#swl-refresh:disabled{opacity:.5;cursor:default}';
+  document.head.appendChild(stl);
+
   const sel = 'padding:7px 10px;background:#0f1115;border:1px solid #2a3140;border-radius:8px;color:#e7eaee;outline:none;font-size:13px';
   const inp = 'padding:7px 10px;background:#0f1115;border:1px solid #2a3140;border-radius:8px;color:#e7eaee;outline:none;font-size:13px;width:88px';
   const lbl = 'display:flex;align-items:center;gap:5px;color:#c3c9d4;font-size:13px;white-space:nowrap';
@@ -28,7 +35,7 @@
         <div id="swl-count" style="color:#8b93a1;white-space:nowrap">memuat&hellip;</div>
         <span id="swl-info" style="color:#5a6270;font-size:12px;white-space:nowrap"></span>
         <input id="swl-search" placeholder="cari item&hellip;" style="flex:1;min-width:120px;padding:8px 12px;background:#0f1115;border:1px solid #2a3140;border-radius:8px;color:#e7eaee;outline:none">
-        <button id="swl-refresh" title="Segarkan dari Shopee" aria-label="Segarkan" style="${btn};padding:8px 11px">&#8635;</button>
+        <button id="swl-refresh" title="Segarkan dari Shopee" aria-label="Segarkan" style="${btn};padding:8px 11px"><span id="swl-ico">&#8635;</span></button>
         <button id="swl-json" style="${btn}">JSON</button>
         <button id="swl-csv" style="${btn}">CSV</button>
         <button id="swl-close" style="padding:8px 14px;background:#ee4d2d;border:0;border-radius:8px;color:#fff;cursor:pointer;font-weight:600">Tutup</button>
@@ -74,7 +81,8 @@
   const $ = id => root.querySelector('#' + id);
   $('swl-close').onclick = () => root.remove();
 
-  const toSlim = all => all.map(i => ({
+  const toSlim = all => all.map((i, k) => ({
+    idx: k, // posisi asli dari API = urutan paling baru di-favorit
     itemid: i.itemid, shopid: i.shopid, name: i.name || '',
     shop: i.shop_name || '', loc: i.shop_location || '',
     price: rp(i.price), currency: i.currency, stock: i.stock || 0,
@@ -156,7 +164,7 @@
         case 'liked': return b.liked_count - a.liked_count;
         case 'rating': return b.rating - a.rating;
         case 'name': return a.name.localeCompare(b.name);
-        default: return b.ctime - a.ctime;
+        default: return a.idx - b.idx; // 'recent': urutan asli API (paling baru di-favorit di atas)
       }
     });
     root._filtered = list;
@@ -197,11 +205,14 @@
   };
 
   const refresh = async () => {
-    $('swl-refresh').disabled = true;
+    const b = $('swl-refresh');
+    b.disabled = true; b.classList.add('loading');
     setInfo(null, 'menyegarkan\u2026');
-    try { slim = await fetchAll(); saveCache(slim); apply(); setInfo(Date.now()); }
-    catch (e) { setInfo(null, 'gagal: ' + e.message); }
-    $('swl-refresh').disabled = false;
+    try {
+      slim = await fetchAll(n => setInfo(null, 'menyegarkan\u2026 ' + fmt(n) + ' item'));
+      saveCache(slim); apply(); setInfo(Date.now());
+    } catch (e) { setInfo(null, 'gagal: ' + e.message); }
+    b.disabled = false; b.classList.remove('loading');
   };
   $('swl-refresh').onclick = refresh;
 
@@ -218,7 +229,9 @@
   // --- load: kalau ada cache, tampil instan TANPA fetch. Fetch hanya saat gak ada cache atau klik Segarkan ---
   const cache = loadCache();
   if (cache) {
-    slim = cache.items; apply(); setInfo(cache.ts);
+    // idx = posisi dalam cache (= urutan API), buat cache lama yang belum punya idx
+    slim = cache.items.map((it, k) => { it.idx = k; return it; });
+    apply(); setInfo(cache.ts);
   } else {
     $('swl-status').style.display = 'block'; $('swl-grid').style.display = 'none';
     try {
