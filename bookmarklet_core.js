@@ -108,7 +108,7 @@
       const p = d.paging || {};
       if (p.nomore || !p.cursor || p.cursor === cursor || !d.items || !d.items.length) break;
       cursor = p.cursor;
-      await zzz(220);
+      await zzz(333); // jeda ~3 req/detik biar gak kena anti-bot
     }
     return toSlim(all);
   }
